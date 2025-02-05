@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { API_URL } from '@env'
 
-export const handleLogin = async (
+const handleLogin = async (
   phoneNumber: string,
   password: string,
   setLoading: (loading: boolean) => void,
@@ -71,3 +71,5 @@ export const handleLogin = async (
     setErrorModalVisible(true)
   }
 }
+
+export default handleLogin

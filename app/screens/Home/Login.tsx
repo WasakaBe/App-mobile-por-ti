@@ -12,7 +12,7 @@ import SuccessModal from '@/app/constants/successModal'
 import ErrorModal from '@/app/constants/errorModal'
 import index_styles from '@/app/styles/indexStyle'
 import login_styles from '@/app/styles/loginStyle'
-import { handleLogin } from '@/app/services/loginService'
+import handleLogin from '@/app/services/loginService'
 
 export default function Login({ navigation }: any) {
   const [phoneNumber, setPhoneNumber] = useState('')
