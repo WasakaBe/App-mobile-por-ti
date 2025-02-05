@@ -4,7 +4,7 @@
     "slug": "app-movil-porti",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/logos/icono.png",
+    "icon": "./app/assets/logos/favicon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
