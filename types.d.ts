@@ -7,7 +7,7 @@ export type RootStackParamList = {
   DirectorioServicios: undefined
   Invitacion: undefined
   Noticias: undefined
-  promocionesDescuentos: undefined
+  PromocionesDescuentos: undefined
   Recargas: undefined
   ReporteCiudadano: undefined
 }

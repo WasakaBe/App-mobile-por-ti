@@ -10,13 +10,11 @@ import Conectate from '../screens/Client/conectate'
 import ConsultarSaldo from '../screens/Client/consultarSaldo'
 import DirectorioServicios from '../screens/Client/directorioServicios'
 import Invitacion from '../screens/Client/invitacion'
-import promocionesDescuentos from '../screens/Client/promocionesDescuentos'
+import PromocionesDescuentos from '../screens/Client/promocionesDescuentos'
 import Recargas from '../screens/Client/recargas'
 import ReporteCiudadano from '../screens/Client/ReporteCiudadano'
 
 const Stack = createStackNavigator()
-
-
 
 export default function Router() {
   return (
@@ -95,7 +93,7 @@ export default function Router() {
       />
       <Stack.Screen
         name="PromocionesDescuentos"
-        component={promocionesDescuentos}
+        component={PromocionesDescuentos}
         options={{
           headerShown: false,
         }}
