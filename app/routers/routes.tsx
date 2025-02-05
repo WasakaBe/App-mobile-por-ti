@@ -3,28 +3,49 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import Index from '../index'
 import Login from '../screens/Home/Login'
-const Stack = createStackNavigator() // Usa los tipos aquí
+import LoadingScreen from '../services/LoadingScreen'
+import Dashboard from '../screens/Client/dashboard'
+
+const Stack = createStackNavigator()
 
 export default function Router() {
   return (
-    <>
-      <Stack.Navigator initialRouteName="Index">
-        <Stack.Screen
-          name="Index"
-          component={Index}
-          options={{
-            headerShown: false,
-          }}
-        />
+    <Stack.Navigator initialRouteName="LoadingScreen">
+      {/* Pantalla de Carga */}
+      <Stack.Screen
+        name="LoadingScreen"
+        component={LoadingScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
 
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack.Navigator>
-    </>
+      {/* Pantalla de Inicio */}
+      <Stack.Screen
+        name="Index"
+        component={Index}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      {/* Pantalla de Login */}
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      {/* Pantalla de Dashboard */}
+      <Stack.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
   )
 }

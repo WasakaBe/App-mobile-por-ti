@@ -1,16 +1,9 @@
 import React, { useRef, useEffect } from 'react'
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Animated,
-} from 'react-native'
+import { View, Text, TouchableOpacity, Image, Animated } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-
 import { RootStackParamList } from '@/types'
 import { StackNavigationProp } from '@react-navigation/stack'
+import index_styles from './styles/indexStyle'
 // Define el tipo para las props de navegación
 type IndexScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -51,11 +44,11 @@ export default function Index({ navigation }: Props) {
   }, [fadeAnimLogo, translateAnimLogo, fadeAnimText])
 
   return (
-    <View style={styles.container}>
+    <View style={index_styles.container}>
       {/* Logo con animación */}
       <Animated.View
         style={[
-          styles.logoContainer,
+          index_styles.logoContainer,
           {
             opacity: fadeAnimLogo,
             transform: [{ translateY: translateAnimLogo }],
@@ -64,72 +57,24 @@ export default function Index({ navigation }: Props) {
       >
         <Image
           source={require('./assets/logos/icono.png')}
-          style={styles.logo}
+          style={index_styles.logo}
         />
       </Animated.View>
 
       {/* Texto y botón con animación */}
-      <Animated.View style={[styles.footer, { opacity: fadeAnimText }]}>
-        <Text style={styles.phrase}>
+      <Animated.View style={[index_styles.footer, { opacity: fadeAnimText }]}>
+        <Text style={index_styles.phrase}>
           "Las redes no solo conectan dispositivos, conectan personas y sus
           sueños."
         </Text>
         <TouchableOpacity
-          style={styles.button}
+          style={index_styles.button}
           onPress={() => navigation.navigate('Login')} // Navegar al login
         >
-          <Text style={styles.buttonText}>Comenzar</Text>
+          <Text style={index_styles.buttonText}>Comenzar</Text>
           <Feather name="arrow-right" size={20} color="white" />
         </TouchableOpacity>
       </Animated.View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#080825', // Fondo minimalista oscuro
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 200,
-    height: 100,
-  },
-  footer: {
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    paddingBottom: 30, // Espacio inferior
-    marginBottom: 30,
-  },
-  phrase: {
-    fontSize: 16,
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 20,
-    fontStyle: 'italic',
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1E88E5', // Azul moderno
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-    borderRadius: 15,
-    elevation: 5, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginRight: 10,
-  },
-})
