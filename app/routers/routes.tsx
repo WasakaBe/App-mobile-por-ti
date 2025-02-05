@@ -16,6 +16,8 @@ import ReporteCiudadano from '../screens/Client/ReporteCiudadano'
 
 const Stack = createStackNavigator()
 
+
+
 export default function Router() {
   return (
     <Stack.Navigator initialRouteName="LoadingScreen">
