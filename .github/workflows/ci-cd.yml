@@ -1,0 +1,36 @@
+name: CI/CD APP MOVIL POR TI
+
+on:
+  push:
+    branches:
+      - main # Ejecuta el pipeline al hacer push en la rama principal
+  pull_request:
+    branches:
+      - main # Ejecuta el pipeline en los pull requests hacia la rama principal
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      # 1. Chequear el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # Usa la versión que prefieras
+
+      # 3. Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Verificar errores de TypeScript
+      - name: Check TypeScript
+        run: npx tsc --noEmit
+
+      # 5. Verificar que Expo CLI funcione
+      - name: Validate Expo Project
+        run: npx expo-doctor

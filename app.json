@@ -4,7 +4,7 @@
     "slug": "app-movil-porti",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": null,
+    "icon": "./app/assets/logos/icono.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,26 +13,27 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage":null,
+        "foregroundImage": "./app/assets/logos/icono.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": null
+      "favicon": "./app/assets/logos/icono.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": null,
+          "image": "./app/assets/logos/icono.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

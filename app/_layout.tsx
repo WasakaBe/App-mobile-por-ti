@@ -1,5 +1,11 @@
-import { Stack } from "expo-router";
+import React from 'react'
+import Router from './routers/routes'
 
 export default function RootLayout() {
-  return <Stack />;
+  return (
+    <>
+      {/* Aquí se renderiza el componente Router con toda la configuración */}
+      <Router />
+    </>
+  )
 }
