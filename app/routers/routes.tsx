@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import Index from '../index'
 import Login from '../screens/Home/Login'
 import LoadingScreen from '../services/LoadingScreen'
-import ReporteCiudadano from '../screens/Client/ReporteCiudadano'
+
 import Recargas from '../screens/Client/Recargas'
 import PromocionesDescuentos from '../screens/Client/PromocionesDescuentos'
 import Invitacion from '../screens/Client/Invitacion'
@@ -13,6 +13,7 @@ import ConsultarSaldo from '../screens/Client/ConsultarSaldo'
 import Conectate from '../screens/Client/Conectate'
 import Noticias from '../screens/Client/Noticias'
 import Dashboard from '../screens/Client/Dashboard'
+import ReporteCiudadano from '../screens/Client/ReporteCiudadano'
 
 const Stack = createStackNavigator()
 

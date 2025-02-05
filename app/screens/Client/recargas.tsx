@@ -4,7 +4,7 @@ import React from 'react'
 export default function Recargas() {
   return (
     <View>
-      <Text>recargas</Text>
+      <Text>Recargas</Text>
     </View>
   )
 }
