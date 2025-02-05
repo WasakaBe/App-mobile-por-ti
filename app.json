@@ -12,21 +12,21 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/logos/icono.png",
-        "backgroundColor": "#ffffff"
+  
+        "backgroundColor": "#000"
       }
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./app/assets/logos/icono.png"
+      "output": "static"
+  
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./app/assets/logos/icono.png",
+     
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
