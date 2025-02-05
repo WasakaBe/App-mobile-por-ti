@@ -4,16 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import Index from '../index'
 import Login from '../screens/Home/Login'
 import LoadingScreen from '../services/LoadingScreen'
-
-import Recargas from '../screens/Client/Recargas'
-import PromocionesDescuentos from '../screens/Client/PromocionesDescuentos'
-import Invitacion from '../screens/Client/Invitacion'
-import DirectorioServicios from '../screens/Client/DirectorioServicios'
-import ConsultarSaldo from '../screens/Client/ConsultarSaldo'
-import Conectate from '../screens/Client/Conectate'
-import Noticias from '../screens/Client/Noticias'
 import Dashboard from '../screens/Client/Dashboard'
-import ReporteCiudadano from '../screens/Client/ReporteCiudadano'
 
 const Stack = createStackNavigator()
 
@@ -51,64 +42,6 @@ export default function Router() {
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
-        options={{
-          headerShown: false,
-        }}
-      />
-
-      {/* Pantalla de Noticias */}
-      <Stack.Screen
-        name="Noticias"
-        component={Noticias}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Conectate"
-        component={Conectate}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ConsultarSaldo"
-        component={ConsultarSaldo}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="DirectorioServicios"
-        component={DirectorioServicios}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Invitacion"
-        component={Invitacion}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="PromocionesDescuentos"
-        component={PromocionesDescuentos}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Recargas"
-        component={Recargas}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ReporteCiudadano"
-        component={ReporteCiudadano}
         options={{
           headerShown: false,
         }}
