@@ -17,6 +17,8 @@ interface Dependencia {
   nombre: string
 }
 
+
+
 interface CreateReportModalProps {
   visible: boolean
   onClose: () => void
