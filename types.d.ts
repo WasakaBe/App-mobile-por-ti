@@ -9,5 +9,5 @@ export type RootStackParamList = {
   Noticias: undefined
   PromocionesDescuentos: undefined
   Recargas: undefined
-  ReporteCiudadano: undefined
+  ReporteCiudadano: { idUsuario: number }
 }

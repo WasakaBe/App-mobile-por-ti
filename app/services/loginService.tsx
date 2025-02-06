@@ -51,6 +51,7 @@ const handleLogin = async (
     if (response.status === 200) {
       // Guardar el token en AsyncStorage
       await AsyncStorage.setItem('token', data.token)
+
       console.log('Inicio de sesión exitoso:', data.token)
 
       // Mostrar modal de éxito y redirigir

@@ -12,15 +12,17 @@ import { getBackgroundByIdPartido } from '@/app/constants/partidoBackgrounds'
 import dashboard_styles from '@/app/styles/dashboardStyle'
 import { getLogoByIdPartido } from '@/app/constants/logoPartidos'
 import ErrorModal from '@/app/constants/errorModal'
-
+import Banners from '@/app/components/banners'
 export default function Dashboard({ navigation }: any) {
   const [userName, setUserName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [userPhoto, setUserPhoto] = useState('')
+  const [idUsuario, setIdUsuario] = useState<number | null>(null) // Almacena idUsuario
   const [backgroundSource, setBackgroundSource] = useState(
     getBackgroundByIdPartido(4) // Fondo predeterminado
   )
   const [logoSource, setLogoSource] = useState(getLogoByIdPartido(5)) // Logo predeterminado
+  const [idPartido, setIdPartido] = useState<number>(5) // ID predeterminado del partido
   const [errorModalVisible, setErrorModalVisible] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -47,6 +49,8 @@ export default function Dashboard({ navigation }: any) {
           setUserPhoto(payload.foto_perfil) // Setear la foto del usuario
           setBackgroundSource(getBackgroundByIdPartido(payload.id_partido))
           setLogoSource(getLogoByIdPartido(payload.id_partido)) // Setear el logo del partido
+          setIdPartido(payload.id_partido) // Guardar el id del partido
+          setIdUsuario(payload.id) // Extrae y almacena idUsuario
         }
       } catch (error) {
         console.error('Error obteniendo el token:', error)
@@ -64,7 +68,10 @@ export default function Dashboard({ navigation }: any) {
     >
       <View style={dashboard_styles.header}>
         {/* Logo del Partido */}
-        <Image source={logoSource} style={dashboard_styles.logo} />
+        <Image
+          source={require('../../assets/logo_partidos/unidosPt.png')}
+          style={dashboard_styles.logo}
+        />
         {/* Foto del Usuario */}
         {userPhoto && (
           <Image
@@ -88,7 +95,7 @@ export default function Dashboard({ navigation }: any) {
               dashboard_styles.gridItem,
               dashboard_styles.highlightedItem,
             ]}
-            onPress={() => navigation.navigate('Noticias')}
+            onPress={() => navigation.navigate('Noticias', { idUsuario })}
           >
             <Image
               source={require('../../assets/iconos/NOTICIASPT.png')}
@@ -105,7 +112,9 @@ export default function Dashboard({ navigation }: any) {
               dashboard_styles.gridItem,
               dashboard_styles.highlightedItem,
             ]}
-            onPress={() => navigation.navigate('ReporteCiudadano')}
+            onPress={() =>
+              navigation.navigate('ReporteCiudadano', { idUsuario })
+            }
           >
             <Image
               source={require('../../assets/iconos/REPORTECIUDADANO.png')}
@@ -201,6 +210,9 @@ export default function Dashboard({ navigation }: any) {
           navigation.replace('Login')
         }}
       />
+
+      {/* Aquí se muestra el componente de banners */}
+      <Banners idPartido={idPartido} />
     </ImageBackground>
   )
 }

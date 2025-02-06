@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
+
+const { width } = Dimensions.get('window') // Obtener ancho de la pantalla
 
 const dashboard_styles = StyleSheet.create({
   background: {
@@ -17,8 +19,8 @@ const dashboard_styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 300,
+    height: 80,
     marginBottom: 10,
   },
   welcomeText: {
@@ -40,17 +42,15 @@ const dashboard_styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: 'column',
     alignItems: 'center',
-    width: '90%',
+    width: width,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
-    width: '100%',
+    width: width,
   },
   gridItem: {
-    width: 100,
-    height: 130,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -62,12 +62,12 @@ const dashboard_styles = StyleSheet.create({
   },
   highlightedItem: {
     backgroundColor: '#FFC107', // Amarillo-Naranja
-    width: 250,
+    width: 230,
     height: 130,
   },
   grayItem: {
     backgroundColor: '#D3D3D3', // Gris
-    width: 170,
+    width: 150,
     height: 150,
     borderRadius: 10,
     alignItems: 'center',

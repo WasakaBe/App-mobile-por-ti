@@ -5,6 +5,8 @@ import Index from '../index'
 import Login from '../screens/Home/Login'
 import LoadingScreen from '../services/LoadingScreen'
 import Dashboard from '../screens/Client/dashboard'
+import Noticias from '../screens/Client/noticias'
+import ReporteCiudadano from '../screens/Client/reporteCiudadano'
 
 const Stack = createStackNavigator()
 
@@ -42,6 +44,22 @@ export default function Router() {
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Noticias"
+        component={Noticias}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="ReporteCiudadano"
+        component={ReporteCiudadano}
         options={{
           headerShown: false,
         }}

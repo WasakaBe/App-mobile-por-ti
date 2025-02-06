@@ -13,11 +13,11 @@ export default function LoadingScreen({ navigation }: any) {
           navigation.replace('Dashboard')
         } else {
           // Si no hay token, redirige al Login
-          navigation.replace('Home')
+          navigation.replace('Index')
         }
       } catch (error) {
         console.error('Error verificando autenticación:', error)
-        navigation.replace('Home') // Redirige al Login en caso de error
+        navigation.replace('Index') // Redirige al Login en caso de error
       }
     }
 
