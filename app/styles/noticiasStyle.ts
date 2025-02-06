@@ -10,6 +10,7 @@ const noticias_styles = StyleSheet.create({
    flexDirection: 'row',
    justifyContent: 'space-between',
    alignItems: 'center',
+   padding: 16,
  },
  backButton: {
    flexDirection: 'row',

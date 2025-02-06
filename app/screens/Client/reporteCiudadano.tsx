@@ -24,6 +24,7 @@ import {
 } from '@/app/services/reporteCiudadanoService'
 import reporte_ciudadano_styles from '@/app/styles/reporteCiudadanoStyle'
 import CreateReportModal from '@/app/utils/CreateReportModal'
+import Banners from '@/app/components/banners'
 type ReporteCiudadanoRouteProp = RouteProp<
   RootStackParamList,
   'ReporteCiudadano'
@@ -205,6 +206,9 @@ export default function ReporteCiudadano() {
           <Text>No se encontraron reportes.</Text>
         )}
       </ScrollView>
+
+      {/* Componente de Banners */}
+      <Banners idPartido={idPartido} />
 
       <CreateReportModal
         visible={isModalVisible}

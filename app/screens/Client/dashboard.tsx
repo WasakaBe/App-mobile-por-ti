@@ -201,6 +201,8 @@ export default function Dashboard({ navigation }: any) {
           </TouchableOpacity>
         </View>
       </View>
+      {/* Componente de Banners */}
+      <Banners idPartido={idPartido} />
 
       <ErrorModal
         visible={errorModalVisible}
@@ -210,9 +212,6 @@ export default function Dashboard({ navigation }: any) {
           navigation.replace('Login')
         }}
       />
-
-      {/* Aquí se muestra el componente de banners */}
-      <Banners idPartido={idPartido} />
     </ImageBackground>
   )
 }

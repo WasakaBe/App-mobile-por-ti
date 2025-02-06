@@ -5,7 +5,6 @@ const { width } = Dimensions.get('window') // Obtener ancho de la pantalla
 const dashboard_styles = StyleSheet.create({
   background: {
     flex: 1,
-    alignItems: 'center',
   },
   header: {
     marginTop: 50,
