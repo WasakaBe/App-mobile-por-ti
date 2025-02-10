@@ -13,7 +13,7 @@ import noticias_styles from '@/app/styles/noticiasStyle'
 import Banners from '@/app/components/banners'
 import promociones_descuentos_styles from '@/app/styles/promocionesDescuentos'
 import ModalCupon from '@/app/components/ModalCupon'
-export default function promocionesDescuentos({ route, navigation }: any) {
+export default function PromocionesDescuentos({ route, navigation }: any) {
   const [idPartido, setIdPartido] = useState<number>(5) // ID predeterminado del partido
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null)
@@ -24,14 +24,22 @@ export default function promocionesDescuentos({ route, navigation }: any) {
       id: 1,
       logo: require('../../assets/promocion/cupon3.png'),
       title: 'Flexi',
-      details: ['Valido Los Martes de Verdura', 'Escobedo, Nuevo Leon.'],
+      details: [
+        'Verdura al 15% descuento',
+        'Valido los dias Martes',
+        'Escobedo, Nuevo Leon.',
+      ],
       expiry: '06/02/2025',
     },
     {
       id: 2,
       logo: require('../../assets/promocion/cupon1.png'),
       title: 'CINEPOLIS',
-      details: ['Valido solo Domingos', 'San Pedro Garza Garcia, Nuevo Leon.'],
+      details: [
+        '2x1',
+        'Valido solo Domingos',
+        'San Pedro Garza Garcia, Nuevo Leon.',
+      ],
       expiry: '06/03/2025',
     },
     {
@@ -39,7 +47,8 @@ export default function promocionesDescuentos({ route, navigation }: any) {
       logo: require('../../assets/promocion/cupon2.png'),
       title: 'Farmacia Similares',
       details: [
-        'Valido para productos electros',
+        'Productos de Electrors al 5% descuento',
+        'Valido los dias Domingos',
         'Santa Catarina, Nuevo Leon.',
       ],
       expiry: '26/02/2025',
@@ -48,25 +57,34 @@ export default function promocionesDescuentos({ route, navigation }: any) {
       id: 4,
       logo: require('../../assets/promocion/cupon3.png'),
       title: 'Flexi',
-      details: ['Valido Los Martes de Verdura', 'Escobedo, Nuevo Leon.'],
-      expiry: '06/02/2025',
+      details: [
+        'Verdura al 15% descuento',
+        'Valido los dias Martes',
+        'Escobedo, Nuevo Leon.',
+      ],
+      expiry: '20/02/2025',
     },
     {
       id: 5,
       logo: require('../../assets/promocion/cupon1.png'),
-      title: 'CINEPOLIS',
-      details: ['Valido solo Domingos', 'San Pedro Garza Garcia, Nuevo Leon.'],
-      expiry: '06/03/2025',
+      title: 'CINEPOLIS INTER',
+      details: [
+        '2x1',
+        'Valido solo Domingos',
+        'San Pedro Garza Garcia, Nuevo Leon.',
+      ],
+      expiry: '16/03/2025',
     },
     {
       id: 6,
       logo: require('../../assets/promocion/cupon2.png'),
-      title: 'Farmacia Similares',
+      title: 'Farmacia Similares Cuenca',
       details: [
-        'Valido para productos electros',
-        'Santa Catarina, Nuevo Leon.',
+        'Bajo de Precio a productos de GDRAGON FARMA',
+        'Valido todo el Mes de Febrero',
+        'Santa Mina, Nuevo Leon.',
       ],
-      expiry: '26/02/2025',
+      expiry: '29/02/2025',
     },
   ]
 

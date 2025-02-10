@@ -7,17 +7,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import * as ImagePicker from 'expo-image-picker'
+import * as Location from 'expo-location' // Importar la API de geolocalización
 import { API_URL } from '@env'
 
 interface Dependencia {
   id_dependencia: number
   nombre: string
 }
-
-
 
 interface CreateReportModalProps {
   visible: boolean
@@ -36,8 +36,8 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
   const [selectedDependencia, setSelectedDependencia] = useState<string>('')
 
   const [imageUri, setImageUri] = useState<string | null>(null)
-  const [manualLatitude, setManualLatitude] = useState<string>('')
-  const [manualLongitude, setManualLongitude] = useState<string>('')
+  const [latitude, setLatitude] = useState<string | null>(null)
+  const [longitude, setLongitude] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   // Obtener dependencias al cargar el modal
@@ -53,6 +53,22 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
     }
     fetchDependencias()
   }, [])
+
+  // Obtener ubicación del usuario
+  const getLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync()
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permiso denegado',
+        'Se necesita acceso a la ubicación para obtener las coordenadas automáticamente.'
+      )
+      return
+    }
+
+    const location = await Location.getCurrentPositionAsync({})
+    setLatitude(location.coords.latitude.toString())
+    setLongitude(location.coords.longitude.toString())
+  }
 
   // Seleccionar imagen
   const handleSelectImage = async () => {
@@ -86,8 +102,8 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
       !title ||
       !description ||
       !selectedDependencia ||
-      !manualLatitude ||
-      !manualLongitude
+      !latitude ||
+      !longitude
     ) {
       alert('Por favor, completa todos los campos obligatorios.')
       return
@@ -103,8 +119,8 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
       formData.append('descripcion', description)
       formData.append('id_dependencia', selectedDependencia)
       formData.append('fecha_reporte', new Date().toISOString())
-      formData.append('latitud', manualLatitude)
-      formData.append('longitud', manualLongitude)
+      formData.append('latitud', latitude)
+      formData.append('longitud', longitude)
 
       // Adjuntar la imagen si existe
       if (imageUri) {
@@ -123,8 +139,8 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
         descripcion: description,
         id_dependencia: selectedDependencia,
         fecha_reporte: new Date().toISOString(),
-        latitud: manualLatitude,
-        longitud: manualLongitude,
+        latitud: latitude,
+        longitud: longitude,
         imagen: imageUri,
       })
 
@@ -136,16 +152,14 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
         body: formData,
       })
 
-      const textResponse = await response.text()
+      const textResponse = await response.json()
       console.log('Server response:', textResponse)
 
       if (!response.ok) {
-        throw new Error(`Error al crear el reporte: ${textResponse}`)
+        Alert.alert(` ${textResponse.message}`)
       }
 
-      const data = JSON.parse(textResponse)
-      console.log('Respuesta del servidor:', data)
-      alert('Reporte creado exitosamente.')
+    477
       onClose()
     } catch (error) {
       console.error('Error al guardar el reporte:', error)
@@ -166,7 +180,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
         <View style={styles.modalContent}>
           <Text style={styles.title}>Crear Reporte Ciudadano</Text>
 
-          {/* Título del reporte */}
           <TextInput
             placeholder="Título del reporte"
             style={styles.input}
@@ -174,7 +187,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             onChangeText={setTitle}
           />
 
-          {/* Descripción del reporte */}
           <TextInput
             placeholder="Descripción del reporte"
             multiline
@@ -183,7 +195,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             onChangeText={setDescription}
           />
 
-          {/* Select de dependencias */}
           <Picker
             selectedValue={selectedDependencia}
             onValueChange={(itemValue) => setSelectedDependencia(itemValue)}
@@ -199,23 +210,17 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             ))}
           </Picker>
 
-          {/* Ingresar coordenadas manualmente */}
-          <TextInput
-            placeholder="Latitud (ej: 25.675)"
-            style={styles.input}
-            value={manualLatitude}
-            onChangeText={setManualLatitude}
-            keyboardType="numeric"
-          />
-          <TextInput
-            placeholder="Longitud (ej: -100.318)"
-            style={styles.input}
-            value={manualLongitude}
-            onChangeText={setManualLongitude}
-            keyboardType="numeric"
-          />
+          {/* Botón para obtener la ubicación */}
+          <TouchableOpacity style={styles.locationButton} onPress={getLocation}>
+            <Text style={styles.buttonText}>Obtener Ubicación</Text>
+          </TouchableOpacity>
 
-          {/* Previsualización de la imagen */}
+          <Text style={styles.coordinatesText}>
+            {latitude && longitude
+              ? `Latitud: ${latitude}, Longitud: ${longitude}`
+              : 'Ubicación no obtenida'}
+          </Text>
+
           {imageUri && (
             <Image
               source={{ uri: imageUri }}
@@ -224,7 +229,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             />
           )}
 
-          {/* Botón para seleccionar imagen */}
           <TouchableOpacity
             style={styles.imageButton}
             onPress={handleSelectImage}
@@ -234,7 +238,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             </Text>
           </TouchableOpacity>
 
-          {/* Botón para tomar una foto */}
           <TouchableOpacity
             style={styles.imageButton}
             onPress={handleTakePhoto}
@@ -242,7 +245,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             <Text style={styles.imageButtonText}>Tomar Foto</Text>
           </TouchableOpacity>
 
-          {/* Botón para guardar */}
           <TouchableOpacity
             style={styles.button}
             onPress={handleSaveReport}
@@ -253,7 +255,6 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
             </Text>
           </TouchableOpacity>
 
-          {/* Botón para cancelar */}
           <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
             <Text style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
@@ -262,6 +263,8 @@ const CreateReportModal: React.FC<CreateReportModalProps> = ({
     </Modal>
   )
 }
+
+export default CreateReportModal
 
 const styles = StyleSheet.create({
   coordinatesText: {
@@ -307,6 +310,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
   },
+  locationButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   imageButton: {
     backgroundColor: '#2196F3',
     padding: 10,
@@ -346,5 +356,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 })
-
-export default CreateReportModal

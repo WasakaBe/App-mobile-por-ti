@@ -32,7 +32,7 @@ const dashboard_styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   divider: {
-    width: '80%',
+    width: '100%',
     height: 2,
     backgroundColor: '#FFFFFF',
     marginVertical: 10,

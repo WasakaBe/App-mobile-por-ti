@@ -241,5 +241,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     resizeMode: 'contain',
+    borderRadius: 50,
   },
 })

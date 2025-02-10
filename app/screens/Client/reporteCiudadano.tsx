@@ -1,220 +1,242 @@
-import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
   ImageBackground,
   TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
   Image,
-  ScrollView,
-  TextInput,
 } from 'react-native'
-import { useRoute } from '@react-navigation/native'
-import { RouteProp } from '@react-navigation/native'
-import { RootStackParamList } from '@/types'
-import { Picker } from '@react-native-picker/picker'
+import React, { useState, useEffect } from 'react'
 import { getBackgroundByIdPartido } from '@/app/constants/partidoBackgrounds'
-import { FontAwesome } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import {
-  fetchReportesPorPartido,
-  fetchDependencias,
-  filterReports,
-  Report,
-  Dependencia,
-} from '@/app/services/reporteCiudadanoService'
-import reporte_ciudadano_styles from '@/app/styles/reporteCiudadanoStyle'
-import CreateReportModal from '@/app/utils/CreateReportModal'
 import Banners from '@/app/components/banners'
-type ReporteCiudadanoRouteProp = RouteProp<
-  RootStackParamList,
-  'ReporteCiudadano'
->
-export default function ReporteCiudadano() {
-  const [idPartido] = useState<number>(5) // ID del partido por defecto
-  const [dependencias, setDependencias] = useState<Dependencia[]>([])
-  const [selectedDependencia, setSelectedDependencia] = useState<string>('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [status, setStatus] = useState<string>('')
-  const [filteredReports, setFilteredReports] = useState<Report[]>([])
+import { FontAwesome } from '@expo/vector-icons'
+import noticias_styles from '@/app/styles/noticiasStyle'
+import reporte_ciudadano_styles from '@/app/styles/reporteCiudadanoStyle'
+import { API_URL } from '@env'
+import {
+  fetchReportes,
+  listenForNewReports,
+  Report,
+} from '@/app/services/reportesService'
+import { CreateReportModal, handleCreateReport } from '@/app/utils/reportUtils'
+import {
+  CreateReportModalManual,
+  handleCreateReportManual,
+} from '@/app/utils/handleCreateReport'
+import connectSocket, {
+  disconnectSocket,
+} from '@/app/services/SocketIOComponent'
+
+type Dependencia = {
+  id_dependencia: number
+  nombre: string
+}
+
+export default function ReporteCiudadano({ route, navigation }: any) {
+  const { idUsuario, idPartido } = route.params
+  const [loading, setLoading] = useState<boolean>(true)
   const [reportes, setReportes] = useState<Report[]>([])
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+  const [isModalVisible, setModalVisible] = useState<boolean>(false)
+  const [isManualModalVisible, setManualModalVisible] = useState<boolean>(false)
+  const [newReportTitle, setNewReportTitle] = useState<string>('')
+  const [newReportDescription, setNewReportDescription] = useState<string>('')
+  const [imageUri, setImageUri] = useState<string | null>(null)
+  const [manualCoordinates, setManualCoordinates] = useState<{
+    latitude: number
+    longitude: number
+  }>({ latitude: 0, longitude: 0 }) // Coordenadas manuales inicializadas
 
-  const navigation = useNavigation()
-  const route = useRoute<ReporteCiudadanoRouteProp>()
-  console.log(route.params) // Verifica qué datos llegan aquí
-  const { idUsuario = null } = route.params || {} // Valor predeterminado para evitar el error
+  const [currentLocation, setCurrentLocation] = useState<{
+    latitude: number
+    longitude: number
+  } | null>(null)
+  const [selectedDependencia, setSelectedDependencia] = useState<string>('')
+  const [locationDetails, setLocationDetails] = useState<{
+    city: string
+    region: string
+    country: string
+    street: string
+  } | null>(null)
 
-  if (!idUsuario) {
-    console.error('idUsuario no está definido')
-    return <Text>Error: Usuario no identificado</Text>
-  }
+  const [dependencias, setDependencias] = useState<Dependencia[]>([])
 
-  const handleBackPress = () => {
-    navigation.goBack()
-  }
-
-  // Obtener reportes al cargar el componente
   useEffect(() => {
-    const fetchData = async () => {
-      const dependenciasData = await fetchDependencias()
-      setDependencias(dependenciasData)
-
-      const reportesData = await fetchReportesPorPartido(idPartido)
-      setReportes(reportesData)
-      setFilteredReports(reportesData)
+    const fetchDependencias = async () => {
+      try {
+        const response = await fetch(`${API_URL}api/reportes/dependencias`)
+        const data = await response.json()
+        setDependencias(data)
+      } catch (error) {
+        console.error('Error al obtener dependencias:', error)
+      }
     }
 
-    fetchData()
+    fetchDependencias()
+  }, [])
+
+  useEffect(() => {
+    fetchReportes(idPartido, setReportes, setLoading)
+    // Conectar a socket.io y escuchar eventos en tiempo real
+    const socket = connectSocket()
+    listenForNewReports(idPartido, setReportes)
+
+    return () => {
+      disconnectSocket()
+    }
   }, [idPartido])
 
-  // Manejar búsqueda avanzada
-  const handleSearch = () => {
-    const filtered = filterReports(
-      reportes,
-      selectedDependencia,
-      status,
-      startDate,
-      endDate
-    )
-    setFilteredReports(filtered)
-  }
-
-  const getStatusColor = (status: string) => {
-    return status === 'Pendiente' ? '#757575' : '#4CAF50' // Gris para Pendiente, Verde para Aprobado
-  }
-
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible)
-  }
+  // Renderizar cada reporte
+  const renderReporte = ({ item }: { item: Report }) => (
+    <View style={reporte_ciudadano_styles.reporteCard}>
+      <Text style={reporte_ciudadano_styles.reporteCategoria}>
+        {item.estatus}
+      </Text>
+      <Image
+        source={{ uri: item.foto }}
+        style={reporte_ciudadano_styles.reporteImagen}
+      />
+      <Text style={reporte_ciudadano_styles.reporteTitulo}>{item.titulo}</Text>
+      <Text style={reporte_ciudadano_styles.reporteDescripcion}>
+        {item.descripcion}
+      </Text>
+      <View style={reporte_ciudadano_styles.reporteFooter}>
+        <Text style={reporte_ciudadano_styles.reporteDependencia}>
+          Dependencia: {item.dependencia}
+        </Text>
+        <Text style={reporte_ciudadano_styles.reporteFecha}>
+          {new Date(item.fecha_reporte).toLocaleDateString()}
+        </Text>
+      </View>
+    </View>
+  )
 
   return (
     <ImageBackground
-      source={getBackgroundByIdPartido(idPartido)} // Fondo dinámico según idPartido
+      source={getBackgroundByIdPartido(idPartido)}
       style={reporte_ciudadano_styles.container}
     >
       <View style={reporte_ciudadano_styles.header}>
-        {/* Botón de regresar */}
         <TouchableOpacity
-          style={reporte_ciudadano_styles.backButton}
-          onPress={handleBackPress}
+          style={noticias_styles.backButton}
+          onPress={() => navigation.goBack()}
         >
-          <FontAwesome name="arrow-left" size={18} color="#FFFFFF" />
-          <Text style={reporte_ciudadano_styles.backText}>Regresar</Text>
+          <FontAwesome name="arrow-left" size={18} color="#fff" />
+          <Text style={noticias_styles.backText}>Regresar</Text>
         </TouchableOpacity>
-
-        {/* Botón de Crear reporte */}
+        <Text style={reporte_ciudadano_styles.title}>Reporte Ciudadano</Text>
         <TouchableOpacity
-          style={reporte_ciudadano_styles.createButton}
-          onPress={toggleModal}
+          style={reporte_ciudadano_styles.actionButton}
+          onPress={() => setModalVisible(true)}
         >
-          <Text style={reporte_ciudadano_styles.createButtonText}>
-            CREAR REPORTE CIUDADANO
+          <FontAwesome name="plus" size={18} color="#fff" />
+          <Text style={reporte_ciudadano_styles.buttonText}>Crear Reporte</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={reporte_ciudadano_styles.userInfo}>
+        <TouchableOpacity
+          style={reporte_ciudadano_styles.actionButton}
+          onPress={() => setManualModalVisible(true)}
+        >
+          <FontAwesome name="plus" size={18} color="#fff" />
+          <Text style={reporte_ciudadano_styles.buttonText}>
+            Crear Reporte Manual
           </Text>
         </TouchableOpacity>
       </View>
-      {/* Búsqueda Avanzada */}
-      <View style={reporte_ciudadano_styles.searchContainer}>
-        <Text style={reporte_ciudadano_styles.searchTitle}>
-          Búsqueda Avanzada
-        </Text>
-        <View style={reporte_ciudadano_styles.searchFields}>
-          <Picker
-            selectedValue={selectedDependencia}
-            onValueChange={(itemValue) => setSelectedDependencia(itemValue)}
-            style={reporte_ciudadano_styles.picker}
-          >
-            <Picker.Item label="Seleccione una dependencia" value="" />
-            {dependencias.map((dep) => (
-              <Picker.Item
-                key={dep.id_dependencia}
-                label={dep.nombre}
-                value={dep.nombre}
-              />
-            ))}
-          </Picker>
-          <View style={reporte_ciudadano_styles.dateInputContainer}>
-            <TextInput
-              placeholder="Fecha inicio (YYYY-MM-DD)"
-              style={reporte_ciudadano_styles.dateInput}
-              value={startDate}
-              onChangeText={setStartDate}
-            />
-            <TextInput
-              placeholder="Fecha fin (YYYY-MM-DD)"
-              style={reporte_ciudadano_styles.dateInput}
-              value={endDate}
-              onChangeText={setEndDate}
-            />
-          </View>
-          <Picker
-            selectedValue={status}
-            onValueChange={(itemValue) => setStatus(itemValue)}
-            style={reporte_ciudadano_styles.picker}
-          >
-            <Picker.Item label="Seleccione un estado" value="" />
-            <Picker.Item label="Pendiente" value="Pendiente" />
-            <Picker.Item label="Aprobado" value="Aprobado" />
-          </Picker>
-        </View>
-        <TouchableOpacity
-          style={reporte_ciudadano_styles.searchButton}
-          onPress={handleSearch}
-        >
-          <Text style={reporte_ciudadano_styles.searchButtonText}>Buscar</Text>
-        </TouchableOpacity>
-      </View>
-      {/* Reportes Filtrados */}
-      <ScrollView contentContainerStyle={reporte_ciudadano_styles.content}>
-        {filteredReports && filteredReports.length > 0 ? (
-          filteredReports.map((report, index) => (
-            <View key={index} style={reporte_ciudadano_styles.card}>
-              <Text style={reporte_ciudadano_styles.cardTitle}>
-                {report.titulo}
-              </Text>
-              <Image
-                source={{ uri: report.foto }}
-                style={reporte_ciudadano_styles.cardImage}
-              />
-              <Text style={reporte_ciudadano_styles.cardCategory}>
-                {report.dependencia}
-              </Text>
-              <Text style={reporte_ciudadano_styles.cardDate}>
-                Fecha: {report.fecha_reporte}
-              </Text>
-              <Text style={reporte_ciudadano_styles.cardDescription}>
-                {report.descripcion}
-              </Text>
-              <View style={reporte_ciudadano_styles.cardFooter}>
-                <FontAwesome
-                  name="check-circle"
-                  size={18}
-                  color={getStatusColor(report.estatus)}
-                />
-                <Text
-                  style={[
-                    reporte_ciudadano_styles.cardStatus,
-                    { color: getStatusColor(report.estatus) },
-                  ]}
-                >
-                  {report.estatus}
-                </Text>
-              </View>
-            </View>
-          ))
+
+      <View style={reporte_ciudadano_styles.content}>
+        {loading ? (
+          <ActivityIndicator size="large" color="#fff" />
+        ) : reportes.length > 0 ? (
+          <FlatList
+            data={reportes}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderReporte}
+            style={reporte_ciudadano_styles.listaReportes}
+          />
         ) : (
-          <Text>No se encontraron reportes.</Text>
+          <Text style={reporte_ciudadano_styles.infoText}>
+            No hay reportes disponibles.
+          </Text>
         )}
-      </ScrollView>
+      </View>
 
-      {/* Componente de Banners */}
-      <Banners idPartido={idPartido} />
-
+      {/* Modal para crear reporte */}
       <CreateReportModal
-        visible={isModalVisible}
-        onClose={toggleModal}
-        idUsuario={idUsuario} // Asegúrate de pasar un valor válido para idUsuario
+        isModalVisible={isModalVisible}
+        setModalVisible={setModalVisible}
+        newReportTitle={newReportTitle}
+        setNewReportTitle={setNewReportTitle}
+        newReportDescription={newReportDescription}
+        setNewReportDescription={setNewReportDescription}
+        setImageUri={setImageUri}
+        imageUri={imageUri}
+        dependencias={dependencias}
+        selectedDependencia={selectedDependencia}
+        setSelectedDependencia={setSelectedDependencia}
+        setCurrentLocation={setCurrentLocation}
+        setLocationDetails={setLocationDetails}
+        currentLocation={currentLocation}
+        locationDetails={locationDetails}
+        handleCreateReport={() =>
+          handleCreateReport({
+            idUsuario,
+            idPartido,
+            newReportTitle,
+            newReportDescription,
+            selectedDependencia,
+            currentLocation,
+            imageUri,
+            setReportes,
+            setLoading,
+            setModalVisible,
+            setNewReportTitle,
+            setNewReportDescription,
+            setImageUri,
+            setSelectedDependencia,
+            setCurrentLocation,
+          })
+        }
       />
+
+      {/* Modal para crear reporte manual */}
+      <CreateReportModalManual
+        isModalVisible={isManualModalVisible}
+        setModalVisible={setManualModalVisible}
+        newReportTitle={newReportTitle}
+        setNewReportTitle={setNewReportTitle}
+        newReportDescription={newReportDescription}
+        setNewReportDescription={setNewReportDescription}
+        setImageUri={setImageUri}
+        imageUri={imageUri}
+        dependencias={dependencias}
+        selectedDependencia={selectedDependencia}
+        setSelectedDependencia={setSelectedDependencia}
+        manualCoordinates={manualCoordinates}
+        setManualCoordinates={setManualCoordinates}
+        handleCreateReport={() =>
+          handleCreateReportManual({
+            idUsuario,
+            idPartido,
+            newReportTitle,
+            newReportDescription,
+            selectedDependencia,
+            manualCoordinates,
+            imageUri,
+            setReportes,
+            setLoading,
+            setModalVisible,
+            setNewReportTitle,
+            setNewReportDescription,
+            setImageUri,
+            setSelectedDependencia,
+            setManualCoordinates,
+          })
+        }
+      />
+      <Banners idPartido={idPartido} />
     </ImageBackground>
   )
 }

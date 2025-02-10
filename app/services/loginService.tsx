@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { API_URL } from '@env'
+import { connectSocket } from '@/app/services/SocketIOComponent' // 🔹 Importar el socket
 
 const handleLogin = async (
   phoneNumber: string,
@@ -10,21 +11,19 @@ const handleLogin = async (
   setErrorMessage: (message: string) => void,
   navigation: any
 ) => {
-  // Validar si los campos están vacíos
+  // Validaciones básicas
   if (!phoneNumber || !password) {
     setErrorMessage('Error, favor de rellenar los campos.')
     setErrorModalVisible(true)
     return
   }
 
-  // Validar número de teléfono (solo 10 dígitos)
   if (!/^\d{10}$/.test(phoneNumber)) {
     setErrorMessage('Error, el número de teléfono debe tener 10 dígitos.')
     setErrorModalVisible(true)
     return
   }
 
-  // Validar contraseña (mínimo 8 caracteres)
   if (password.length < 8) {
     setErrorMessage('Error, la contraseña debe tener al menos 8 caracteres.')
     setErrorModalVisible(true)
@@ -32,7 +31,7 @@ const handleLogin = async (
   }
 
   try {
-    setLoading(true) // Mostrar indicador de carga
+    setLoading(true)
 
     const response = await fetch(`${API_URL}api/userspartido/login`, {
       method: 'POST',
@@ -45,14 +44,18 @@ const handleLogin = async (
       }),
     })
 
-    const data = await response.json() // Convertir respuesta en JSON
-    setLoading(false) // Ocultar indicador de carga
+    const data = await response.json()
+    setLoading(false)
 
     if (response.status === 200) {
       // Guardar el token en AsyncStorage
       await AsyncStorage.setItem('token', data.token)
 
-      console.log('Inicio de sesión exitoso:', data.token)
+      console.log('✅ Inicio de sesión exitoso:', data.token)
+      console.log('🏛️ Usuario pertenece al partido:', data.idPartido)
+
+      // 🔥 Conectar al socket y unirse al grupo del partido
+      connectSocket(data.idPartido)
 
       // Mostrar modal de éxito y redirigir
       setSuccessModalVisible(true)
@@ -61,13 +64,12 @@ const handleLogin = async (
         navigation.navigate('Dashboard') // Redirige al Dashboard
       }, 1500)
     } else {
-      // Si la respuesta tiene otro código de estado, mostrar error
       setErrorMessage(data.message || 'Error en el inicio de sesión.')
       setErrorModalVisible(true)
     }
   } catch (error) {
     setLoading(false)
-    console.error('Error en la conexión con el backend:', error)
+    console.error('❌ Error en la conexión con el backend:', error)
     setErrorMessage('Error en el servidor. Inténtalo de nuevo.')
     setErrorModalVisible(true)
   }

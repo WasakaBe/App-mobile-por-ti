@@ -10,6 +10,9 @@ import ReporteCiudadano from '../screens/Client/reporteCiudadano'
 import PromocionesDescuentos from '../screens/Client/promocionesDescuentos'
 import DirectorioServicios from '../screens/Client/directorioServicios'
 import Invitacion from '../screens/Client/invitacion'
+import Conectate from '../screens/Client/conectate'
+
+import Recargas from '../screens/Client/recargas'
 
 const Stack = createStackNavigator()
 
@@ -87,6 +90,21 @@ export default function Router() {
       <Stack.Screen
         name="Invitacion"
         component={Invitacion}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Conectate"
+        component={Conectate}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Recargas"
+        component={Recargas}
         options={{
           headerShown: false,
         }}

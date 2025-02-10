@@ -97,6 +97,7 @@ const ModalCupon: React.FC<ModalCuponProps> = ({
                 <Text style={styles.conditionsTitle}>
                   Condiciones del descuento
                 </Text>
+
                 <Text style={styles.conditionsText}>
                   El cupón tendrá una duración de 15 minutos. Después de ese
                   tiempo no será válido. Además, solo se puede usar 3 veces por
@@ -202,6 +203,7 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
   },
+
   modalContainer: {
     width: '90%',
     backgroundColor: '#fff',
@@ -274,18 +276,18 @@ const styles = StyleSheet.create({
   confirmButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '50%',
   },
   yesButton: {
     backgroundColor: '#FF4D4D',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     borderRadius: 5,
   },
   noButton: {
     backgroundColor: '#28A745',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     borderRadius: 5,
   },
   buttonText: {

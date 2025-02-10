@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { decode as atob } from 'base-64'
 import { getBackgroundByIdPartido } from '@/app/constants/partidoBackgrounds'
 import dashboard_styles from '@/app/styles/dashboardStyle'
-import { getLogoByIdPartido } from '@/app/constants/logoPartidos'
+import getLogoByIdPartido from '@/app/constants/logoPartidos'
 import ErrorModal from '@/app/constants/errorModal'
 import Banners from '@/app/components/banners'
 export default function Dashboard({ navigation }: any) {
@@ -19,7 +19,7 @@ export default function Dashboard({ navigation }: any) {
   const [userPhoto, setUserPhoto] = useState('')
   const [idUsuario, setIdUsuario] = useState<number | null>(null) // Almacena idUsuario
   const [backgroundSource, setBackgroundSource] = useState(
-    getBackgroundByIdPartido(4) // Fondo predeterminado
+    getBackgroundByIdPartido(5) // Fondo predeterminado
   )
   const [logoSource, setLogoSource] = useState(getLogoByIdPartido(5)) // Logo predeterminado
   const [idPartido, setIdPartido] = useState<number>(5) // ID predeterminado del partido
@@ -42,7 +42,7 @@ export default function Dashboard({ navigation }: any) {
           }
 
           setUserName(
-            `${payload.nombre} ${payload.a_paterno} ${payload.a_materno}` ||
+            `${payload.nombre} ${payload.a_paterno} ${payload.a_materno} ${payload.id_partido}` ||
               'Usuario'
           )
           setPhoneNumber(payload.telefono)
@@ -95,7 +95,9 @@ export default function Dashboard({ navigation }: any) {
               dashboard_styles.gridItem,
               dashboard_styles.highlightedItem,
             ]}
-            onPress={() => navigation.navigate('Noticias', { idUsuario })}
+            onPress={() =>
+              navigation.navigate('Noticias', { idUsuario, idPartido })
+            }
           >
             <Image
               source={require('../../assets/iconos/NOTICIASPT.png')}
@@ -113,7 +115,7 @@ export default function Dashboard({ navigation }: any) {
               dashboard_styles.highlightedItem,
             ]}
             onPress={() =>
-              navigation.navigate('ReporteCiudadano', { idUsuario })
+              navigation.navigate('ReporteCiudadano', { idUsuario, idPartido })
             }
           >
             <Image

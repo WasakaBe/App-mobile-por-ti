@@ -1,5 +1,5 @@
 // constants/logoPartidos.ts
-export const getLogoByIdPartido = (idPartido: number) => {
+const getLogoByIdPartido = (idPartido: number) => {
   switch (idPartido) {
     case 1:
       return require('../assets/logo_partidos/pan.jpg')
@@ -15,3 +15,5 @@ export const getLogoByIdPartido = (idPartido: number) => {
       return require('../assets/logo_partidos/icono.png') // Logo genérico o predeterminado
   }
 }
+
+export default getLogoByIdPartido
