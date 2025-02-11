@@ -8,11 +8,14 @@ import {
   Image,
 } from 'react-native'
 
+import { API_URL } from '@env'
 interface ModalCuponProps {
   visible: boolean
   onClose: () => void
   couponTitle: string
   logo: any
+  idPromocion: number | null
+  status: number
 }
 
 const ModalCupon: React.FC<ModalCuponProps> = ({
@@ -20,30 +23,74 @@ const ModalCupon: React.FC<ModalCuponProps> = ({
   onClose,
   couponTitle,
   logo,
+  idPromocion,
+  status,
 }) => {
-  const [step, setStep] = useState(1) // Control de pasos
-  const [timeLeft, setTimeLeft] = useState(15 * 60) // Tiempo restante en segundos
-  const [clickCount, setClickCount] = useState(0) // Conteo de veces solicitado
+  const [step, setStep] = useState(1) // Control de pasos (1: condiciones, 2: cupón activo)
+  const [timeLeft, setTimeLeft] = useState(status === 1 ? 15 * 60 : 0) // Tiempo restante en segundos
   const [confirmExitVisible, setConfirmExitVisible] = useState(false) // Control del modal de confirmación
+  const [isValid, setIsValid] = useState(true) // Estado de validez del cupón
   const timerRef = useRef<NodeJS.Timeout | null>(null) // Referencia al temporizador
 
-  // Formatear tiempo restante
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
+  // 📌 Función para registrar el clic en la API (Método POST)
+  const registrarClick = async () => {
+    if (!idPromocion) {
+      console.error('❌ Error: idPromocion es undefined o null.')
+      return
+    }
+
+    try {
+      const url = `${API_URL}api/promociones/click/${idPromocion}`
+      console.log('🔍 Llamando a la API con ID de promoción:', idPromocion)
+      console.log('🌐 URL de la API:', url)
+
+      const response = await fetch(url, {
+        method: 'POST', // ✅ Cambiado de PUT a POST
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      console.log('📩 Código de respuesta HTTP:', response.status)
+      console.log('📝 Headers de respuesta:', response.headers)
+
+      if (!response.ok) {
+        throw new Error(
+          `❌ Error en la API: ${response.status} - ${response.statusText}`
+        )
+      }
+
+      const contentType = response.headers.get('content-type')
+      console.log('📝 Content-Type de la respuesta:', contentType)
+
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('❌ La API no devolvió JSON.')
+      }
+
+      const data = await response.json()
+      console.log('✅ Respuesta JSON de la API:', data)
+
+      if (!data.success) {
+        console.error('⚠️ Error al registrar el clic:', data.message)
+      } else {
+        console.log('🎉 Clic registrado exitosamente en la base de datos.')
+      }
+    } catch (error) {
+      console.error(
+        '⚠️ Error en la solicitud:',
+        error instanceof Error ? error.message : error
+      )
+    }
   }
 
-  // Iniciar el conteo regresivo
+  // 📌 Iniciar el conteo regresivo cuando el usuario obtiene el cupón
   useEffect(() => {
     if (step === 2 && visible) {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current as NodeJS.Timeout)
-            alert('Cupón caducado')
-            onClose()
-            setStep(1)
+            setIsValid(false) // 📌 Marca el cupón como inválido
             return 0
           }
           return prev - 1
@@ -52,17 +99,16 @@ const ModalCupon: React.FC<ModalCuponProps> = ({
     }
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current) // Limpiar temporizador al desmontar
+      if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [step, visible])
 
-  const handleGetCoupon = () => {
-    if (clickCount >= 3) {
-      alert('Has usado los 3 cupones permitidos hoy para esta promoción.')
-    } else {
-      setClickCount((prev) => prev + 1) // Incrementar conteo
-      setStep(2) // Pasar al paso 2
-    }
+  // 📌 Manejo de solicitud de cupón
+  const handleGetCoupon = async () => {
+    await registrarClick() // 📌 Llamar a la API para registrar el clic
+    setStep(2) // Pasar al paso 2
+    setIsValid(status === 1) // Validar estado del cupón
+    setTimeLeft(status === 1 ? 15 * 60 : 0) // Reiniciar tiempo si el cupón es válido
   }
 
   const handleExitConfirm = () => {
@@ -71,8 +117,9 @@ const ModalCupon: React.FC<ModalCuponProps> = ({
 
   const confirmExit = () => {
     setConfirmExitVisible(false)
-    setStep(1)
-    setTimeLeft(15 * 60) // Reiniciar tiempo
+    setStep(1) // Reiniciar el proceso del cupón
+    setTimeLeft(status === 1 ? 15 * 60 : 0) // Reiniciar tiempo dependiendo del estado
+    setIsValid(status === 1) // Reiniciar validez
     onClose()
   }
 
@@ -129,19 +176,18 @@ const ModalCupon: React.FC<ModalCuponProps> = ({
           <View style={styles.overlay}>
             <View style={styles.modalContainer}>
               <Image source={logo} style={styles.logo} />
-              <Text style={styles.modalTitle}>CUPÓN VÁLIDO</Text>
+              <Text style={styles.modalTitle}>
+                {status === 1 ? 'CUPÓN VÁLIDO' : 'CUPÓN INVÁLIDO'}
+              </Text>
               <Text style={styles.validText}>
-                Tiempo restante: {formatTime(timeLeft)}
+                {isValid
+                  ? `Tiempo restante: ${Math.floor(timeLeft / 60)}:${(
+                      timeLeft % 60
+                    )
+                      .toString()
+                      .padStart(2, '0')}`
+                  : 'Cupón inválido'}
               </Text>
-              <Text style={styles.detailsText}>
-                Has solicitado este cupón {clickCount}{' '}
-                {clickCount === 1 ? 'vez' : 'veces'} hoy.
-              </Text>
-              {clickCount >= 3 && (
-                <Text style={styles.detailsText}>
-                  Has usado los 3 cupones permitidos hoy.
-                </Text>
-              )}
 
               <TouchableOpacity
                 style={styles.closeButton}

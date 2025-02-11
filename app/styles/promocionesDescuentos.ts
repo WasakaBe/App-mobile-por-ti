@@ -22,7 +22,7 @@ const promociones_descuentos_styles = StyleSheet.create({
   },
   coupon: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     padding: 16,
@@ -37,9 +37,10 @@ const promociones_descuentos_styles = StyleSheet.create({
     marginVertical: 10,
   },
   logo_cupon: {
-    width: 80,
-    height: 40,
-    resizeMode: 'contain',
+    width: 50,
+    height: 50,
+    objectFit: 'fill',
+    borderRadius: 50,
   },
   cardHeader: {
     flexDirection: 'row',

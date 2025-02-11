@@ -68,6 +68,7 @@ const noticias_styles = StyleSheet.create({
     color: '#555',
     marginBottom: 5,
     marginTop: 5,
+    width: '60%',
   },
   noticiaDescripcionContainer: {
     maxHeight: 'auto',
@@ -79,7 +80,7 @@ const noticias_styles = StyleSheet.create({
   },
   noticiaDescripcion: {
     fontSize: 16,
-    color: '#444',
+    color: '#333',
     marginBottom: 5,
     marginTop: 5,
     fontStyle: 'italic',

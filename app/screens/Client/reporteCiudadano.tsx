@@ -60,7 +60,8 @@ export default function ReporteCiudadano({ route, navigation }: any) {
   } | null>(null)
 
   const [dependencias, setDependencias] = useState<Dependencia[]>([])
-
+  const [expanded, setExpanded] = useState(false)
+  const toggleExpanded = () => setExpanded(!expanded)
   useEffect(() => {
     const fetchDependencias = async () => {
       try {
@@ -88,24 +89,42 @@ export default function ReporteCiudadano({ route, navigation }: any) {
 
   // Renderizar cada reporte
   const renderReporte = ({ item }: { item: Report }) => (
-    <View style={reporte_ciudadano_styles.reporteCard}>
-      <Text style={reporte_ciudadano_styles.reporteCategoria}>
-        {item.estatus}
+    <View style={noticias_styles.card}>
+      <Text style={reporte_ciudadano_styles.reporteDependencia}>
+        {item.dependencia}
       </Text>
       <Image
         source={{ uri: item.foto }}
-        style={reporte_ciudadano_styles.reporteImagen}
+        style={noticias_styles.noticiaImagen}
       />
-      <Text style={reporte_ciudadano_styles.reporteTitulo}>{item.titulo}</Text>
-      <Text style={reporte_ciudadano_styles.reporteDescripcion}>
-        {item.descripcion}
-      </Text>
-      <View style={reporte_ciudadano_styles.reporteFooter}>
-        <Text style={reporte_ciudadano_styles.reporteDependencia}>
-          Dependencia: {item.dependencia}
+
+      <View style={noticias_styles.noticiaTitleContainer}>
+        <Text style={noticias_styles.noticiaTitulo}>{item.titulo}</Text>
+        <Text style={[noticias_styles.noticiaTipo]}>{item.estatus}</Text>
+      </View>
+
+      <View
+        style={[
+          noticias_styles.noticiaDescripcionContainer,
+          expanded && noticias_styles.expandedContainer,
+        ]}
+      >
+        <Text
+          style={noticias_styles.noticiaDescripcion}
+          numberOfLines={expanded ? undefined : 3}
+        >
+          {item.descripcion}
         </Text>
-        <Text style={reporte_ciudadano_styles.reporteFecha}>
-          {new Date(item.fecha_reporte).toLocaleDateString()}
+      </View>
+
+      <View style={noticias_styles.noticiaCalendarContainer}>
+        <FontAwesome name="calendar" size={24} color={'black'} />
+        <Text style={noticias_styles.noticiaFecha}>
+          {new Date(item.fecha_reporte).toLocaleDateString('es-MX', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          })}
         </Text>
       </View>
     </View>

@@ -34,7 +34,7 @@ type Comentario = {
   Comentario: string
   FechaComentario: string
 }
-const MAX_LENGTH = 100
+
 export default function Noticias({ route, navigation }: any) {
   const { idUsuario, idPartido } = route.params
   const [noticias, setNoticias] = useState<Noticia[]>([])
@@ -278,7 +278,13 @@ export default function Noticias({ route, navigation }: any) {
 
       <View style={noticias_styles.noticiaCalendarContainer}>
         <FontAwesome name="calendar" size={24} color={'black'} />
-        <Text style={noticias_styles.noticiaFecha}>{item.Fecha}</Text>
+        <Text style={noticias_styles.noticiaFecha}>
+          {new Date(item.Fecha).toLocaleDateString('es-MX', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </Text>
       </View>
 
       <View style={noticias_styles.actions}>

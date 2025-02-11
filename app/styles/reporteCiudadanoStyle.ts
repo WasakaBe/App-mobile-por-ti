@@ -46,57 +46,20 @@ const reporte_ciudadano_styles = StyleSheet.create({
   listaReportes: {
     flex: 1,
   },
-  reporteCard: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  reporteCategoria: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#d9534f', // Color rojo similar al diseño
-    padding: 10,
-  },
-  reporteImagen: {
-    width: '100%',
-    height: 280,
-    objectFit: 'fill',
-  },
-  reporteTitulo: {
+
+  reporteDependencia: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
-    marginVertical: 10,
-    marginHorizontal: 10,
-  },
-  reporteDescripcion: {
-    fontSize: 16,
-    color: '#555',
-    marginHorizontal: 10,
+    color: '#fff',
     marginBottom: 10,
-  },
-  reporteFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
+    backgroundColor: '#be6318',
     padding: 10,
+    borderRadius: 5,
+    textAlign: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
-  reporteDependencia: {
-    fontSize: 14,
-    color: '#888',
-  },
-  reporteFecha: {
-    fontSize: 14,
-    color: '#888',
-  },
+
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
