@@ -36,19 +36,32 @@ const noticias_styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 10,
     margin: 10,
-    padding: 10,
+    padding: 20,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
-
+  noticiaTitleContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
   noticiaTitulo: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
     marginTop: 5,
-    color: '#333',
+    color: '#000',
+    width: '60%',
+  },
+  noticiaCalendarContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    padding: 3,
   },
   noticiaFecha: {
     fontSize: 14,
@@ -56,20 +69,36 @@ const noticias_styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 5,
   },
+  noticiaDescripcionContainer: {
+    maxHeight: 'auto',
+    overflow: 'hidden',
+  },
+  expandedContainer: {
+    maxHeight: undefined,
+    overflow: 'visible',
+  },
   noticiaDescripcion: {
     fontSize: 16,
     color: '#444',
     marginBottom: 5,
     marginTop: 5,
+    fontStyle: 'italic',
+    padding: 3,
   },
   noticiaTipo: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#fff',
     marginBottom: 10,
+    backgroundColor: '#4b2709',
+    padding: 10,
+    borderRadius: 5,
+    textAlign: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   noticiaImagenContainer: {
-    padding: 20,
+    padding: 1,
   },
   noticiaImagen: {
     width: '100%',
@@ -203,6 +232,16 @@ const noticias_styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  verMas: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+  verMenos: {
+    color: '#007bff',
+    fontWeight: 'bold',
+    marginTop: 5,
   },
 })
 
