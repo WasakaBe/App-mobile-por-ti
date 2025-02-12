@@ -157,7 +157,9 @@ export default function Dashboard({ navigation }: any) {
           {/* Conéctate */}
           <TouchableOpacity
             style={[dashboard_styles.gridItem, dashboard_styles.grayItem]}
-            onPress={() => navigation.navigate('Conectate')}
+            onPress={() =>
+              navigation.navigate('Conectate', { idUsuario, idPartido })
+            }
           >
             <Image
               source={require('../../assets/iconos/CONECTATE.png')}
@@ -193,7 +195,9 @@ export default function Dashboard({ navigation }: any) {
           {/* Consultar Saldo */}
           <TouchableOpacity
             style={[dashboard_styles.gridItem, dashboard_styles.grayItem]}
-            onPress={() => navigation.navigate('ConsultarSaldo')}
+            onPress={() =>
+              navigation.navigate('ConsultarSaldo', { idUsuario, idPartido })
+            }
           >
             <Image
               source={require('../../assets/iconos/CONSULTAR SALDO.png')}

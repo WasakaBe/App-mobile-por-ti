@@ -13,6 +13,7 @@ import Invitacion from '../screens/Client/invitacion'
 import Conectate from '../screens/Client/conectate'
 
 import Recargas from '../screens/Client/recargas'
+import ConsultarSaldo from '../screens/Client/consultarSaldo'
 
 const Stack = createStackNavigator()
 
@@ -105,6 +106,13 @@ export default function Router() {
       <Stack.Screen
         name="Recargas"
         component={Recargas}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ConsultarSaldo"
+        component={ConsultarSaldo}
         options={{
           headerShown: false,
         }}
